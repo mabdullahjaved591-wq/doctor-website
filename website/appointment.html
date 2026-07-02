@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinic Appointment – Dr. Javed Iqbal</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-blue: #0b5394;
+            --primary-hover: #083c6b;
+            --dark-blue: #073b64;
+            --light-bg: #f4f8fb;
+            --card-blue: #e8f1f7;
+            --text-dark: #2c3e50;
+            --text-muted: #627d98;
+            --white: #ffffff;
+            --border-color: #d1d9e6;
+            --error-red: #e74c3c;
+            --success-green: #2ecc71;
+            --transition: all 0.3s ease;
+            --whatsapp-green: #25d366;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            background: #f9fbfd;
+            line-height: 1.6;
+        }
+        a { text-decoration: none; color: inherit; }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            background: var(--white);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--dark-blue);
+            line-height: 1.2;
+        }
+        .logo i { font-size: 32px; color: #2a9d8f; }
+        .logo span { display: block; font-size: 14px; font-weight: 400; color: var(--text-muted); }
+        .btn-back {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 13px;
+            transition: background 0.3s;
+        }
+        .btn-back:hover { background-color: var(--dark-blue); }
+
+        .main-nav {
+            background-color: var(--primary-blue);
+            position: relative;
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        .nav-menu li a {
+            display: block;
+            padding: 15px 20px;
+            color: var(--white);
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        .nav-menu li a:hover, .nav-menu li.active a {
+            background-color: var(--dark-blue);
+        }
+        .menu-toggle {
+            display: none;
+            color: var(--white);
+            font-size: 24px;
+            background: none;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+        }
+
+        .appointment-wrapper {
+            max-width: 700px;
+            margin: 40px auto;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .appointment-header {
+            padding: 24px 30px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--white);
+        }
+        .appointment-header h1 {
+            font-size: 22px;
+            color: var(--dark-blue);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .appointment-header h1 i { color: var(--primary-blue); }
+        .appointment-header p { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+
+        .wizard-progress {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 30px;
+            background: var(--light-bg);
+            position: relative;
+        }
+        .wizard-progress::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            background: var(--border-color);
+            z-index: 1;
+        }
+        .step-indicator {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: var(--light-bg);
+            padding: 0 10px;
+        }
+        .step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--border-color);
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        .step-label { font-size: 12px; font-weight: 500; color: var(--text-muted); }
+        .step-indicator.active .step-num {
+            background: var(--primary-blue);
+            color: var(--white);
+            box-shadow: 0 0 0 4px rgba(11,83,148,0.2);
+        }
+        .step-indicator.active .step-label { color: var(--primary-blue); font-weight: 600; }
+        .step-indicator.completed .step-num { background: var(--primary-blue); color: var(--white); }
+
+        .appointment-body { padding: 30px; }
+        .step-content { display: none; animation: fadeIn 0.4s ease; }
+        .step-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px; color: var(--text-dark); }
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            color: var(--text-dark);
+            background: var(--white);
+            transition: var(--transition);
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(11,83,148,0.15);
+        }
+        textarea.form-control { resize: vertical; min-height: 100px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .checkbox-group { display: flex; align-items: flex-start; gap: 10px; margin-top: 10px; }
+        .checkbox-group input { margin-top: 3px; cursor: pointer; }
+        .checkbox-group label { font-size: 13px; color: var(--text-muted); font-weight: 400; }
+
+        .appointment-footer {
+            padding: 20px 30px;
+            border-top: 1px solid var(--border-color);
+            background: var(--light-bg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn-modal {
+            background: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-modal:hover { background: var(--primary-hover); }
+        .btn-modal-outline {
+            background: transparent;
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+            padding: 12px 24px;
+            font-size: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .success-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .success-screen.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease;
+        }
+        .success-icon { font-size: 60px; color: var(--success-green); margin-bottom: 20px; }
+        .success-screen h3 { font-size: 22px; margin-bottom: 10px; color: var(--text-dark); }
+        .success-screen p { color: var(--text-muted); font-size: 15px; line-height: 1.6; max-width: 400px; }
+
+        .clinic-info-banner {
+            background: var(--card-blue);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--primary-blue);
+            font-size: 14px;
+        }
+        .clinic-info-banner i { color: var(--primary-blue); margin-right: 8px; }
+        .clinic-info-banner strong { color: var(--dark-blue); }
+
+        .footer-contact-line {
+            text-align: center;
+            padding: 15px 0 5px 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            margin-top: 15px;
+        }
+        .footer-contact-line i { color: var(--whatsapp-green); margin: 0 5px; }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: var(--primary-blue);
+                position: absolute;
+                top: 100%;
+                left: 0;
+                z-index: 100;
+            }
+            .nav-menu.active { display: flex; }
+            .nav-menu li a { border-bottom: 1px solid rgba(255,255,255,0.1); }
+            .appointment-wrapper { margin: 20px 10px; border-radius: 12px; }
+            .grid-2 { grid-template-columns: 1fr; gap: 0; }
+            .wizard-progress::before { display: none; }
+            .wizard-progress { padding: 15px; }
+            .step-label { display: none; }
+            .appointment-header h1 { font-size: 18px; }
+        }
+        @media (max-width: 600px) {
+            .appointment-wrapper { margin: 10px 5px; border-radius: 8px; }
+            .appointment-header, .appointment-footer { padding: 15px; }
+            .appointment-body { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="container top-header">
+        <div class="logo">
+            <i class="fa-solid fa-hand-holding-medical"></i>
+            <div>
+                Hope of Healing
+                <span>Dr. Javed Iqbal – Homeopathic Clinic</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <a href="main.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container nav-container">
+            <button class="menu-toggle" id="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="nav-menu" id="nav-links">
+                <li><a href="main.html">Home</a></li>
+                <li><a href="main.html#about">About Dr. Javed</a></li>
+                <li class="active"><a href="appointment.html">Appointments</a></li>
+                <li><a href="checkup.html">Online Checkup</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="main.html#services">Services</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="appointment-wrapper">
+        <div class="appointment-header">
+            <h1><i class="fa-solid fa-calendar-check"></i> Clinic Appointment</h1>
+            <p>Visit Dr. Javed Iqbal at Hope of Healing Clinic</p>
+        </div>
+
+        <div class="wizard-progress" id="wizardProgress">
+            <div class="step-indicator active" id="indicator-1">
+                <div class="step-num">1</div>
+                <div class="step-label">Date & Time</div>
+            </div>
+            <div class="step-indicator" id="indicator-2">
+                <div class="step-num">2</div>
+                <div class="step-label">Your Details</div>
+            </div>
+            <div class="step-indicator" id="indicator-3">
+                <div class="step-num">3</div>
+                <div class="step-label">Health Info</div>
+            </div>
+        </div>
+
+        <form id="bookingForm">
+            <div class="appointment-body">
+                <div class="clinic-info-banner">
+                    <i class="fa-solid fa-location-dot"></i> <strong>Hope of Healing Clinic</strong> – [Your Clinic Address] <br>
+                    <i class="fa-regular fa-clock"></i> <strong>Mon–Sat:</strong> 5:00 PM – 10:00 PM &nbsp;|&nbsp; <strong>Sunday:</strong> 10:00 AM – 2:00 PM, 5:00 PM – 10:00 PM
+                </div>
+
+                <div class="step-content active" id="step-1">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Preferred Date <span style="color:var(--error-red)">*</span></label>
+                            <input type="date" class="form-control" id="datePicker" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Time Slot <span style="color:var(--error-red)">*</span></label>
+                            <select class="form-control" id="timeSlotSelect" required>
+                                <option value="" disabled selected>Select a date first</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-content" id="step-2">
+                    <div class="form-group">
+                        <label>Full Name <span style="color:var(--error-red)">*</span></label>
+                        <input type="text" class="form-control" placeholder="e.g. John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address <span style="color:var(--error-red)">*</span></label>
+                        <input type="email" class="form-control" placeholder="e.g. john@example.com" required>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Phone Number <span style="color:var(--error-red)">*</span></label>
+                            <input type="tel" class="form-control" placeholder="03XX-XXXXXXX" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Age <span style="color:var(--error-red)">*</span></label>
+                            <input type="number" class="form-control" placeholder="Years" min="1" max="120" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-content" id="step-3">
+                    <div class="form-group">
+                        <label>Describe Your Health Concern <span style="color:var(--error-red)">*</span></label>
+                        <textarea class="form-control" placeholder="Briefly describe your symptoms, duration, and any medications you're currently taking..." required></textarea>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="termsCheck" required>
+                        <label for="termsCheck">I agree to the clinic's policies and consent to receive treatment under Dr. Javed Iqbal's care.</label>
+                    </div>
+                </div>
+
+                <div class="success-screen" id="successScreen">
+                    <i class="fa-solid fa-circle-check success-icon"></i>
+                    <h3>Appointment Request Received!</h3>
+                    <p>Thank you, <strong>Dr. Javed Iqbal</strong> will review your request and confirm your slot within 2 hours.</p>
+                    <p style="margin-top: 15px; font-weight: 600; color: var(--primary-blue);">📍 Hope of Healing – Your healing journey begins!</p>
+                </div>
+
+                <!-- Contact line with WhatsApp -->
+                <div class="footer-contact-line">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp: 0305-4322122 &nbsp;|&nbsp; 
+                    <i class="fa-solid fa-phone"></i> Jazz: 0305-4322122 &nbsp;|&nbsp; 
+                    <i class="fa-solid fa-phone"></i> Zong: 0315-8423383 &nbsp;|&nbsp; 
+                    <i class="fa-solid fa-phone"></i> Ufone: 0332-7423383
+                </div>
+            </div>
+
+            <div class="appointment-footer" id="modalFooter">
+                <button type="button" class="btn-modal-outline" id="prevBtn" style="visibility: hidden;">Back</button>
+                <button type="button" class="btn-modal" id="nextBtn">Continue <i class="fa-solid fa-arrow-right"></i></button>
+                <button type="submit" class="btn-modal" id="submitBtn" style="display: none;">Confirm Booking <i class="fa-solid fa-check"></i></button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const navLinks = document.getElementById('nav-links');
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            const datePicker = document.getElementById('datePicker');
+            const timeSlotSelect = document.getElementById('timeSlotSelect');
+            const today = new Date().toISOString().split('T')[0];
+            datePicker.setAttribute('min', today);
+
+            function updateTimeSlots(selectedDate) {
+                const date = new Date(selectedDate);
+                const day = date.getDay();
+                timeSlotSelect.innerHTML = '';
+                if (day === 0) {
+                    const opt1 = document.createElement('option');
+                    opt1.value = 'sunday-morning';
+                    opt1.textContent = '10:00 AM – 2:00 PM';
+                    timeSlotSelect.appendChild(opt1);
+                    const opt2 = document.createElement('option');
+                    opt2.value = 'sunday-evening';
+                    opt2.textContent = '5:00 PM – 10:00 PM';
+                    timeSlotSelect.appendChild(opt2);
+                    timeSlotSelect.value = 'sunday-morning';
+                } else {
+                    const opt = document.createElement('option');
+                    opt.value = 'weekday-evening';
+                    opt.textContent = '5:00 PM – 10:00 PM';
+                    timeSlotSelect.appendChild(opt);
+                    timeSlotSelect.value = 'weekday-evening';
+                }
+            }
+
+            datePicker.addEventListener('change', function() {
+                if (this.value) updateTimeSlots(this.value);
+            });
+            datePicker.value = today;
+            updateTimeSlots(today);
+
+            let currentStep = 1;
+            const totalSteps = 3;
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const form = document.getElementById('bookingForm');
+
+            function validateStep() {
+                const currentContent = document.getElementById(`step-${currentStep}`);
+                const inputs = currentContent.querySelectorAll('input[required], select[required], textarea[required]');
+                let isValid = true;
+                inputs.forEach(input => {
+                    if (!input.checkValidity()) {
+                        input.reportValidity();
+                        isValid = false;
+                    }
+                });
+                return isValid;
+            }
+
+            function updateUI() {
+                document.querySelectorAll('.step-content').forEach((step, index) => {
+                    step.classList.toggle('active', index + 1 === currentStep);
+                });
+                document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                    if (index + 1 < currentStep) {
+                        indicator.classList.add('completed', 'active');
+                    } else if (index + 1 === currentStep) {
+                        indicator.classList.add('active');
+                        indicator.classList.remove('completed');
+                    } else {
+                        indicator.classList.remove('active', 'completed');
+                    }
+                });
+                prevBtn.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+                if (currentStep === totalSteps) {
+                    nextBtn.style.display = 'none';
+                    submitBtn.style.display = 'inline-flex';
+                } else {
+                    nextBtn.style.display = 'inline-flex';
+                    submitBtn.style.display = 'none';
+                }
+            }
+
+            nextBtn.addEventListener('click', () => {
+                if (validateStep()) { currentStep++; updateUI(); }
+            });
+            prevBtn.addEventListener('click', () => {
+                currentStep--; updateUI();
+            });
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (validateStep()) {
+                    document.getElementById('wizardProgress').style.display = 'none';
+                    document.getElementById('modalFooter').style.display = 'none';
+                    document.getElementById(`step-${currentStep}`).classList.remove('active');
+                    document.getElementById('successScreen').classList.add('active');
+                }
+            });
+
+            updateUI();
+        });
+    </script>
+</body>
+</html>

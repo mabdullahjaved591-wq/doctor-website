@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hope of Healing - Booking Portal</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- Color Palette & Variables --- */
+        :root {
+            --primary-teal: #0a7e8c;
+            --primary-hover: #086672;
+            --soft-white: #ffffff;
+            --light-grey: #f4f7fb;
+            --dark-slate: #1e2a3a;
+            --border-color: #d1d9e6;
+            --error-red: #e74c3c;
+            --success-green: #2ecc71;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-grey);
+            color: var(--dark-slate);
+            /* Dummy background to simulate the website */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* --- Dummy Trigger Buttons (To simulate your website buttons) --- */
+        .dummy-section {
+            text-align: center;
+            padding: 40px;
+            background: var(--soft-white);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .btn {
+            background-color: var(--primary-teal);
+            color: var(--soft-white);
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            box-shadow: 0 4px 10px rgba(10, 126, 140, 0.3);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--dark-slate);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--light-grey);
+            box-shadow: none;
+        }
+
+        /* --- Modal Overlay & Container --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(30, 42, 58, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--soft-white);
+            width: 90%;
+            max-width: 650px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            transform: translateY(30px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        /* --- Modal Header --- */
+        .modal-header {
+            padding: 24px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--soft-white);
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            color: var(--dark-slate);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-header h2 i {
+            color: var(--primary-teal);
+        }
+
+        .modal-header p {
+            font-size: 13px;
+            color: #6c7a89;
+            margin-top: 4px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--dark-slate);
+            cursor: pointer;
+            transition: var(--transition);
+            opacity: 0.6;
+        }
+
+        .close-btn:hover {
+            opacity: 1;
+            color: var(--error-red);
+        }
+
+        /* --- Progress Wizard --- */
+        .wizard-progress {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 30px;
+            background-color: var(--light-grey);
+            position: relative;
+        }
+
+        .wizard-progress::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            background-color: var(--border-color);
+            z-index: 1;
+        }
+
+        .step-indicator {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--light-grey);
+            padding: 0 10px;
+        }
+
+        .step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            color: var(--dark-slate);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .step-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6c7a89;
+        }
+
+        .step-indicator.active .step-num {
+            background-color: var(--primary-teal);
+            color: var(--soft-white);
+            box-shadow: 0 0 0 4px rgba(10, 126, 140, 0.2);
+        }
+
+        .step-indicator.active .step-label {
+            color: var(--primary-teal);
+            font-weight: 600;
+        }
+
+        .step-indicator.completed .step-num {
+            background-color: var(--primary-teal);
+            color: var(--soft-white);
+        }
+
+        /* --- Form Sections --- */
+        .modal-body {
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .step-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* --- Dual Mode Toggle --- */
+        .mode-toggle {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .mode-option {
+            flex: 1;
+            position: relative;
+        }
+
+        .mode-option input[type="radio"] {
+            display: none;
+        }
+
+        .mode-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 15px;
+            background-color: var(--soft-white);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            gap: 10px;
+        }
+
+        .mode-label i {
+            font-size: 28px;
+            color: #6c7a89;
+            transition: var(--transition);
+        }
+
+        .mode-label span {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark-slate);
+        }
+
+        .mode-option input[type="radio"]:checked + .mode-label {
+            border-color: var(--primary-teal);
+            background-color: #f0f9fa;
+        }
+
+        .mode-option input[type="radio"]:checked + .mode-label i {
+            color: var(--primary-teal);
+        }
+
+        /* --- Form Fields --- */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--dark-slate);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            color: var(--dark-slate);
+            background-color: var(--soft-white);
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 3px rgba(10, 126, 140, 0.15);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group input {
+            margin-top: 3px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            font-size: 13px;
+            color: #6c7a89;
+            font-weight: 400;
+        }
+
+        /* Conditional Section */
+        .online-fields {
+            display: none;
+            background-color: #f0f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px dashed var(--primary-teal);
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* --- Modal Footer --- */
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--light-grey);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* --- Success Screen --- */
+        .success-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-screen.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .success-icon {
+            font-size: 60px;
+            color: var(--success-green);
+            margin-bottom: 20px;
+        }
+
+        .success-screen h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: var(--dark-slate);
+        }
+
+        .success-screen p {
+            color: #6c7a89;
+            font-size: 15px;
+            line-height: 1.6;
+            max-width: 400px;
+        }
+
+        /* --- Responsiveness --- */
+        @media (max-width: 600px) {
+            .modal-content {
+                width: 100%;
+                height: 100%;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .mode-toggle {
+                flex-direction: column;
+            }
+            .wizard-progress::before {
+                display: none;
+            }
+            .wizard-progress {
+                padding: 15px;
+            }
+            .step-label {
+                display: none; /* Hide text on small screens to save space */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- DUMMY WEBSITE CONTENT (To demonstrate the integration) -->
+    <div class="dummy-section">
+        <h2>Dr. Javed Iqbal - Hope of Healing</h2>
+        <p style="margin-bottom: 20px; color: #6c7a89;">Testing the modal triggers. Click any button below.</p>
+        
+        <!-- These classes 'trigger-booking' connect them to the JS -->
+        <button class="btn trigger-booking" style="margin-bottom: 10px;">
+            <i class="fa-regular fa-calendar-check"></i> Header: Book Appointment
+        </button><br>
+        <button class="btn trigger-booking" style="margin-bottom: 10px;">
+            Hero: Book a Consultation &rarr;
+        </button><br>
+        <button class="btn btn-outline trigger-booking">
+            <i class="fa-solid fa-paper-plane"></i> Contact: Send Request
+        </button>
+    </div>
+
+    <!-- ==========================================
+         APPOINTMENT BOOKING MODAL (THE UI)
+         ========================================== -->
+    <div class="modal-overlay" id="bookingModal">
+        <div class="modal-content">
+            
+            <!-- Header -->
+            <div class="modal-header">
+                <div>
+                    <h2><i class="fa-solid fa-leaf"></i> Hope of Healing</h2>
+                    <p>Consultation with Dr. Javed Iqbal (15+ Years Exp.)</p>
+                </div>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+
+            <!-- Progress Wizard -->
+            <div class="wizard-progress" id="wizardProgress">
+                <div class="step-indicator active" id="indicator-1">
+                    <div class="step-num">1</div>
+                    <div class="step-label">Mode & Time</div>
+                </div>
+                <div class="step-indicator" id="indicator-2">
+                    <div class="step-num">2</div>
+                    <div class="step-label">Details</div>
+                </div>
+                <div class="step-indicator" id="indicator-3">
+                    <div class="step-num">3</div>
+                    <div class="step-label">Symptoms</div>
+                </div>
+            </div>
+
+            <!-- Form Body -->
+            <form id="bookingForm">
+                <div class="modal-body">
+                    
+                    <!-- STEP 1: Mode & Schedule -->
+                    <div class="step-content active" id="step-1">
+                        <div class="mode-toggle">
+                            <label class="mode-option">
+                                <input type="radio" name="visitMode" value="clinic" checked>
+                                <div class="mode-label">
+                                    <i class="fa-solid fa-house-medical"></i>
+                                    <span>Clinic Visit</span>
+                                    <small style="font-weight: 300; font-size: 12px; color: #6c7a89;">In-person consultation</small>
+                                </div>
+                            </label>
+                            <label class="mode-option">
+                                <input type="radio" name="visitMode" value="online">
+                                <div class="mode-label">
+                                    <i class="fa-solid fa-laptop-medical"></i>
+                                    <span>Online Checkup</span>
+                                    <small style="font-weight: 300; font-size: 12px; color: #6c7a89;">Video/Phone from home</small>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Dynamic Fields for Online Only -->
+                        <div class="online-fields" id="onlineFields">
+                            <div class="form-group">
+                                <label>Preferred Platform</label>
+                                <select class="form-control" id="platformSelect">
+                                    <option value="whatsapp">WhatsApp Video</option>
+                                    <option value="zoom">Zoom</option>
+                                    <option value="meet">Google Meet</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Upload Past Reports (Optional)</label>
+                                <input type="file" class="form-control" accept=".pdf, .jpg, .jpeg, .png">
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Preferred Date <span style="color:var(--error-red)">*</span></label>
+                                <input type="date" class="form-control" id="datePicker" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Preferred Time Slot <span style="color:var(--error-red)">*</span></label>
+                                <select class="form-control" required>
+                                    <option value="" disabled selected>Select a slot...</option>
+                                    <option value="morning">Morning: 10:00 AM - 1:00 PM</option>
+                                    <option value="evening">Evening: 5:00 PM - 8:00 PM</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: Personal Details -->
+                    <div class="step-content" id="step-2">
+                        <div class="form-group">
+                            <label>Full Name <span style="color:var(--error-red)">*</span></label>
+                            <input type="text" class="form-control" placeholder="e.g. John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address <span style="color:var(--error-red)">*</span></label>
+                            <input type="email" class="form-control" placeholder="e.g. john@example.com" required>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Phone Number <span style="color:var(--error-red)">*</span></label>
+                                <input type="tel" class="form-control" placeholder="+92 300 0000000" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Age <span style="color:var(--error-red)">*</span></label>
+                                <input type="number" class="form-control" placeholder="Years" min="1" max="120" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: Symptoms & Confirm -->
+                    <div class="step-content" id="step-3">
+                        <div class="form-group">
+                            <label>Describe Symptoms / Reason for Visit <span style="color:var(--error-red)">*</span></label>
+                            <textarea class="form-control" placeholder="Briefly describe your health concern, duration of symptoms, and any other relevant details..." required></textarea>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="termsCheck" required>
+                            <label for="termsCheck">I agree to the clinic policies and understand that online consultations are subject to network stability.</label>
+                        </div>
+                    </div>
+
+                    <!-- Success Screen (Hidden by default) -->
+                    <div class="success-screen" id="successScreen">
+                        <i class="fa-solid fa-circle-check success-icon"></i>
+                        <h3>Request Received!</h3>
+                        <p>Thank you. Dr. Javed Iqbal will review your request. Our desk will confirm your exact slot within 2 hours.</p>
+                        <p style="margin-top: 15px; font-weight: 600; color: var(--primary-teal);">A healing journey begins!</p>
+                    </div>
+
+                </div>
+
+                <!-- Footer / Navigation Buttons -->
+                <div class="modal-footer" id="modalFooter">
+                    <button type="button" class="btn btn-outline" id="prevBtn" style="visibility: hidden;">Back</button>
+                    <button type="button" class="btn" id="nextBtn">Continue <i class="fa-solid fa-arrow-right"></i></button>
+                    <button type="submit" class="btn" id="submitBtn" style="display: none;">Confirm Booking <i class="fa-solid fa-check"></i></button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- ==========================================
+         JAVASCRIPT LOGIC
+         ========================================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. MODAL OPEN/CLOSE LOGIC ---
+            const modal = document.getElementById('bookingModal');
+            const closeBtn = document.getElementById('closeModal');
+            
+            // This connects ANY button with the class 'trigger-booking' (Header, Hero, Contact)
+            const triggerButtons = document.querySelectorAll('.trigger-booking');
+            
+            // Open modal when any trigger button is clicked
+            triggerButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevents default link jumps if they are <a> tags
+                    modal.classList.add('active');
+                });
+            });
+
+            // Close modal functions
+            const closeModalFunc = () => modal.classList.remove('active');
+            
+            // Close on X button click
+            closeBtn.addEventListener('click', closeModalFunc);
+            
+            // Close when clicking strictly outside the modal content area
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModalFunc();
+                }
+            });
+
+            // --- 2. SET MINIMUM DATE TO TODAY ---
+            const datePicker = document.getElementById('datePicker');
+            const today = new Date().toISOString().split('T')[0];
+            datePicker.setAttribute('min', today);
+
+            // --- 3. DUAL-MODE CONDITIONAL LOGIC ---
+            const radioButtons = document.querySelectorAll('input[name="visitMode"]');
+            const onlineFields = document.getElementById('onlineFields');
+            const platformSelect = document.getElementById('platformSelect');
+
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    if (e.target.value === 'online') {
+                        onlineFields.style.display = 'block';
+                        platformSelect.setAttribute('required', 'true');
+                    } else {
+                        onlineFields.style.display = 'none';
+                        platformSelect.removeAttribute('required');
+                    }
+                });
+            });
+
+            // --- 4. STEP WIZARD LOGIC ---
+            let currentStep = 1;
+            const totalSteps = 3;
+            
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const form = document.getElementById('bookingForm');
+
+            // Function to validate inputs within the *current* active step only
+            function validateStep() {
+                const currentContent = document.getElementById(`step-${currentStep}`);
+                const inputs = currentContent.querySelectorAll('input[required], select[required], textarea[required]');
+                let isValid = true;
+                
+                inputs.forEach(input => {
+                    if (!input.checkValidity()) {
+                        input.reportValidity(); // Shows native browser HTML5 error popup
+                        isValid = false;
+                    }
+                });
+                return isValid;
+            }
+
+            function updateUI() {
+                // Update Form Content visibility
+                document.querySelectorAll('.step-content').forEach((step, index) => {
+                    step.classList.toggle('active', index + 1 === currentStep);
+                });
+
+                // Update Progress Indicators
+                document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                    if (index + 1 < currentStep) {
+                        indicator.classList.add('completed', 'active');
+                    } else if (index + 1 === currentStep) {
+                        indicator.classList.add('active');
+                        indicator.classList.remove('completed');
+                    } else {
+                        indicator.classList.remove('active', 'completed');
+                    }
+                });
+
+                // Update Footer Buttons
+                prevBtn.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+                
+                if (currentStep === totalSteps) {
+                    nextBtn.style.display = 'none';
+                    submitBtn.style.display = 'inline-flex';
+                } else {
+                    nextBtn.style.display = 'inline-flex';
+                    submitBtn.style.display = 'none';
+                }
+            }
+
+            // Next Button Click
+            nextBtn.addEventListener('click', () => {
+                if (validateStep()) {
+                    currentStep++;
+                    updateUI();
+                }
+            });
+
+            // Previous Button Click
+            prevBtn.addEventListener('click', () => {
+                currentStep--;
+                updateUI();
+            });
+
+            // --- 5. FORM SUBMISSION LOGIC ---
+            form.addEventListener('submit', (e) => {
+                e.preventDefault(); // Stop actual page reload
+                
+                // Double check final step validation
+                if (validateStep()) {
+                    // Hide wizard progress, footer, and active step
+                    document.getElementById('wizardProgress').style.display = 'none';
+                    document.getElementById('modalFooter').style.display = 'none';
+                    document.getElementById(`step-${currentStep}`).classList.remove('active');
+                    
+                    // Show beautiful success screen
+                    document.getElementById('successScreen').classList.add('active');
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>

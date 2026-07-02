@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Register – Hope of Healing</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Identity Services SDK -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <style>
+        :root {
+            --primary-blue: #0b5394;
+            --primary-hover: #083c6b;
+            --dark-blue: #073b64;
+            --light-bg: #f4f8fb;
+            --card-blue: #e8f1f7;
+            --text-dark: #2c3e50;
+            --text-muted: #627d98;
+            --white: #ffffff;
+            --border-color: #d1d9e6;
+            --error-red: #e74c3c;
+            --success-green: #2ecc71;
+            --transition: all 0.3s ease;
+            --whatsapp-green: #25d366;
+            --google-blue: #4285F4;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            background: #f9fbfd;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        a { text-decoration: none; color: inherit; }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            background: var(--white);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--dark-blue);
+            line-height: 1.2;
+        }
+        .logo i { font-size: 32px; color: #2a9d8f; }
+        .logo span { display: block; font-size: 14px; font-weight: 400; color: var(--text-muted); }
+        .btn-back {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 13px;
+            transition: background 0.3s;
+        }
+        .btn-back:hover { background-color: var(--dark-blue); }
+
+        .login-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .login-card {
+            background: var(--white);
+            max-width: 440px;
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            padding: 40px 35px;
+            transition: var(--transition);
+        }
+
+        .login-card .brand-icon {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .login-card .brand-icon i {
+            font-size: 44px;
+            color: #2a9d8f;
+            background: var(--light-bg);
+            padding: 15px;
+            border-radius: 50%;
+        }
+        .login-card h2 {
+            text-align: center;
+            font-size: 24px;
+            color: var(--dark-blue);
+            margin-bottom: 6px;
+        }
+        .login-card .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .tab-toggle {
+            display: flex;
+            background: var(--light-bg);
+            border-radius: 50px;
+            padding: 4px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px 0;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-muted);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+        }
+        .tab-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+            box-shadow: 0 4px 10px rgba(11, 83, 148, 0.25);
+        }
+        .tab-btn:hover:not(.active) {
+            color: var(--text-dark);
+        }
+
+        .form-panel {
+            display: none;
+            animation: fadeIn 0.35s ease;
+        }
+        .form-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text-dark);
+        }
+        .form-group .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 15px;
+            color: var(--text-dark);
+            background: var(--white);
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .form-group .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(11,83,148,0.12);
+        }
+        .form-group .form-control::placeholder {
+            color: #b0c0d0;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: flex-end;
+            margin: 5px 0 20px 0;
+        }
+        .form-options a {
+            font-size: 13px;
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+        .form-options a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: var(--primary-blue);
+            color: var(--white);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+        }
+        .btn-submit:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(11,83,148,0.25);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 22px 0;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+        .divider span {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 400;
+            white-space: nowrap;
+        }
+
+        .google-btn-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        #google-login-btn,
+        #google-register-btn {
+            width: 100%;
+        }
+        #google-login-btn iframe,
+        #google-register-btn iframe {
+            width: 100% !important;
+            border-radius: 10px !important;
+        }
+
+        /* Google registration hint */
+        .gmail-hint {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 10px 0 5px 0;
+        }
+        .gmail-hint i {
+            color: var(--google-blue);
+            margin-right: 5px;
+        }
+
+        .password-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .already-member {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        .already-member a {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+        .already-member a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 500px) {
+            .login-card {
+                padding: 28px 20px;
+            }
+            .top-header .btn-back span {
+                display: none;
+            }
+            .top-header .btn-back i {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="container top-header">
+        <div class="logo">
+            <i class="fa-solid fa-hand-holding-medical"></i>
+            <div>
+                Hope of Healing
+                <span>Dr. Javed Iqbal – Homeopathic Clinic</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <a href="main.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> <span>Back to Home</span></a>
+        </div>
+    </header>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+
+            <div class="brand-icon">
+                <i class="fa-solid fa-user-doctor"></i>
+            </div>
+            <h2>Welcome Back</h2>
+            <p class="subtitle">Login or create your patient account</p>
+
+            <div class="tab-toggle" id="tabToggle">
+                <button class="tab-btn active" data-tab="login">Login</button>
+                <button class="tab-btn" data-tab="register">Register</button>
+            </div>
+
+            <!-- ======================================== -->
+            <!-- LOGIN PANEL                              -->
+            <!-- ======================================== -->
+            <div class="form-panel active" id="panel-login">
+                <form id="loginForm" onsubmit="return handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <input type="email" class="form-control" id="loginEmail" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-options">
+                        <a href="#">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn-submit">Sign In</button>
+                </form>
+
+                <div class="divider"><span>or continue with</span></div>
+                <div class="google-btn-wrapper">
+                    <div id="google-login-btn"></div>
+                </div>
+                <div class="gmail-hint"><i class="fa-regular fa-envelope"></i> Use your Gmail account</div>
+
+                <div class="already-member">
+                    Don't have an account? <a href="#" id="switchToRegister">Register now</a>
+                </div>
+            </div>
+
+            <!-- ======================================== -->
+            <!-- REGISTER PANEL                          -->
+            <!-- ======================================== -->
+            <div class="form-panel" id="panel-register">
+                <form id="registerForm" onsubmit="return handleRegister(event)">
+                    <div class="form-group">
+                        <label for="regName">Full Name</label>
+                        <input type="text" class="form-control" id="regName" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regEmail">Email Address</label>
+                        <input type="email" class="form-control" id="regEmail" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regPassword">Password</label>
+                        <input type="password" class="form-control" id="regPassword" placeholder="Min. 8 characters" minlength="8" required>
+                        <div class="password-hint">Must be at least 8 characters.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="regConfirm">Confirm Password</label>
+                        <input type="password" class="form-control" id="regConfirm" placeholder="Confirm your password" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Create Account</button>
+                </form>
+
+                <div class="divider"><span>or register with</span></div>
+                <div class="google-btn-wrapper">
+                    <div id="google-register-btn"></div>
+                </div>
+                <div class="gmail-hint">
+                    <i class="fa-brands fa-google"></i> <strong>Sign up using your Gmail account</strong> – one‑click registration
+                </div>
+
+                <div class="already-member">
+                    Already have an account? <a href="#" id="switchToLogin">Sign in</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- Tab Switching ---
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const panels = {
+            login: document.getElementById('panel-login'),
+            register: document.getElementById('panel-register')
+        };
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const target = btn.dataset.tab;
+                Object.keys(panels).forEach(key => {
+                    panels[key].classList.toggle('active', key === target);
+                });
+
+                const heading = document.querySelector('.login-card h2');
+                const subtitle = document.querySelector('.login-card .subtitle');
+                if (target === 'login') {
+                    heading.textContent = 'Welcome Back';
+                    subtitle.textContent = 'Login to your patient account';
+                } else {
+                    heading.textContent = 'Create Account';
+                    subtitle.textContent = 'Register using your email or Gmail';
+                }
+            });
+        });
+
+        document.getElementById('switchToRegister').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('.tab-btn[data-tab="register"]').click();
+        });
+        document.getElementById('switchToLogin').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('.tab-btn[data-tab="login"]').click();
+        });
+
+        // --- Demo Form Handlers ---
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            alert(`🔐 Login attempt for: ${email}\n(Replace this with your backend logic.)`);
+            return false;
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const pass = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirm').value;
+
+            if (pass !== confirm) {
+                alert('❌ Passwords do not match. Please try again.');
+                return false;
+            }
+            if (pass.length < 8) {
+                alert('❌ Password must be at least 8 characters.');
+                return false;
+            }
+            alert(`✅ Registration successful for: ${name} (${email})\n(Replace this with your backend logic.)`);
+            return false;
+        }
+
+        // --- 🔐 GOOGLE SIGN-IN (REAL OAUTH) ---
+        // ==========================================================
+        // 📌 IMPORTANT: Replace with your actual Google Client ID
+        // Get one from: https://console.cloud.google.com/apis/credentials
+        // ==========================================================
+        const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
+
+        // ==========================================================
+        // 🛠️ FIX THE "ACCESS BLOCKED" ERROR:
+        // 1. Go to Google Cloud Console > Credentials.
+        // 2. Edit your OAuth 2.0 Client ID.
+        // 3. Under "Authorized JavaScript origins", ADD:
+        //    - http://localhost:5500 (or your current localhost port)
+        //    - https://yourdomain.com (if live)
+        // 4. Go to OAuth consent screen > Add your email to "Test users".
+        // 5. Save and wait 2 minutes, then refresh this page.
+        // ==========================================================
+
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                return JSON.parse(window.atob(base64));
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function handleCredentialResponse(response) {
+            const payload = parseJwt(response.credential);
+            if (!payload) {
+                alert('❌ Failed to decode Google response. Please try again.');
+                return;
+            }
+
+            const name = payload.name || 'Patient';
+            const email = payload.email || 'No email provided';
+            const isLoginTab = document.getElementById('panel-login').classList.contains('active');
+
+            // Explicitly tell the user if they are logging in OR registering via Gmail
+            if (isLoginTab) {
+                alert(`👋 Welcome back, ${name}!\n📧 ${email}\n\n✅ You have successfully logged in using your Google/Gmail account.\n(Replace this alert with your backend logic.)`);
+            } else {
+                alert(`🎉 Congratulations, ${name}!\n📧 ${email}\n\n✅ You have successfully registered using your Gmail account.\n(Replace this alert with your backend logic.)`);
+            }
+
+            // 🚀 For production, send the token to your server:
+            // fetch('/api/auth/google', {
+            //   method: 'POST',
+            //   headers: { 'Content-Type': 'application/json' },
+            //   body: JSON.stringify({ token: response.credential })
+            // })
+            // .then(res => res.json())
+            // .then(data => { window.location.href = '/dashboard'; });
+        }
+
+        function initGoogleSignIn() {
+            if (typeof google === 'undefined') {
+                setTimeout(initGoogleSignIn, 300);
+                return;
+            }
+
+            if (GOOGLE_CLIENT_ID === 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com') {
+                console.warn('⚠️ Please replace GOOGLE_CLIENT_ID with your actual Client ID from Google Cloud Console.');
+                alert('⚠️ Setup required: Replace GOOGLE_CLIENT_ID in the JavaScript with your actual Client ID from Google Cloud Console.');
+            }
+
+            google.accounts.id.initialize({
+                client_id: GOOGLE_CLIENT_ID,
+                callback: handleCredentialResponse,
+                auto_select: false,
+                cancel_on_tap_outside: true,
+                context: 'signin'
+            });
+
+            google.accounts.id.renderButton(
+                document.getElementById('google-login-btn'),
+                {
+                    theme: 'outline',
+                    size: 'large',
+                    width: '100%',
+                    text: 'continue_with',
+                    shape: 'rectangular',
+                    logo_alignment: 'left'
+                }
+            );
+
+            google.accounts.id.renderButton(
+                document.getElementById('google-register-btn'),
+                {
+                    theme: 'outline',
+                    size: 'large',
+                    width: '100%',
+                    text: 'signup_with',
+                    shape: 'rectangular',
+                    logo_alignment: 'left'
+                }
+            );
+        }
+
+        if (document.readyState === 'complete') {
+            initGoogleSignIn();
+        } else {
+            window.addEventListener('load', initGoogleSignIn);
+        }
+
+        // Enter key support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const activeTab = document.querySelector('.tab-btn.active');
+                if (activeTab && activeTab.dataset.tab === 'login') {
+                    document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+                } else if (activeTab && activeTab.dataset.tab === 'register') {
+                    document.getElementById('registerForm').dispatchEvent(new Event('submit'));
+                }
+            }
+        });
+    </script>
+</body>
+</html>

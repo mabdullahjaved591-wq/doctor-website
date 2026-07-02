@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact – Dr. Javed Iqbal</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-blue: #0b5394;
+            --primary-hover: #083c6b;
+            --dark-blue: #073b64;
+            --light-bg: #f4f8fb;
+            --card-blue: #e8f1f7;
+            --text-dark: #2c3e50;
+            --text-muted: #627d98;
+            --white: #ffffff;
+            --border-color: #d1d9e6;
+            --whatsapp-green: #25d366;
+            --zong-color: #ed1b24;
+            --jazz-color: #00a651;
+            --ufone-color: #e8772e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            background: #f9fbfd;
+            line-height: 1.6;
+        }
+        a { text-decoration: none; color: inherit; }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            background: var(--white);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--dark-blue);
+            line-height: 1.2;
+        }
+        .logo i { font-size: 32px; color: #2a9d8f; }
+        .logo span { display: block; font-size: 14px; font-weight: 400; color: var(--text-muted); }
+        .btn-back {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 13px;
+            transition: background 0.3s;
+        }
+        .btn-back:hover { background-color: var(--dark-blue); }
+
+        .main-nav {
+            background-color: var(--primary-blue);
+            position: relative;
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        .nav-menu li a {
+            display: block;
+            padding: 15px 20px;
+            color: var(--white);
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        .nav-menu li a:hover, .nav-menu li.active a {
+            background-color: var(--dark-blue);
+        }
+        .menu-toggle {
+            display: none;
+            color: var(--white);
+            font-size: 24px;
+            background: none;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+        }
+
+        /* Contact Page Specific */
+        .contact-hero {
+            text-align: center;
+            padding: 50px 0 20px 0;
+        }
+        .contact-hero h1 {
+            font-size: 36px;
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+        .contact-hero p {
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            max-width: 900px;
+            margin: 30px auto 50px auto;
+        }
+
+        .contact-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .contact-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .contact-card .icon-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+            font-size: 30px;
+            color: var(--white);
+        }
+        .contact-card .icon-circle.whatsapp { background: var(--whatsapp-green); }
+        .contact-card .icon-circle.zong { background: var(--zong-color); }
+        .contact-card .icon-circle.jazz { background: var(--jazz-color); }
+        .contact-card .icon-circle.ufone { background: var(--ufone-color); }
+
+        .contact-card .network-name {
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--dark-blue);
+        }
+        .contact-card .number {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 8px 0;
+            letter-spacing: 0.5px;
+        }
+        .contact-card .action-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .contact-card .action-link.call {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+        .contact-card .action-link.call:hover {
+            background: transparent;
+            color: var(--primary-blue);
+            border-color: var(--primary-blue);
+        }
+        .contact-card .action-link.whatsapp-link {
+            background: var(--whatsapp-green);
+            color: var(--white);
+        }
+        .contact-card .action-link.whatsapp-link:hover {
+            background: transparent;
+            color: var(--whatsapp-green);
+            border-color: var(--whatsapp-green);
+        }
+
+        .clinic-address-box {
+            max-width: 600px;
+            margin: 0 auto 60px auto;
+            background: var(--white);
+            padding: 30px 40px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .clinic-address-box i {
+            font-size: 28px;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+        }
+        .clinic-address-box h3 {
+            color: var(--dark-blue);
+            margin-bottom: 8px;
+        }
+        .clinic-address-box p {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: var(--primary-blue);
+                position: absolute;
+                top: 100%;
+                left: 0;
+                z-index: 100;
+            }
+            .nav-menu.active { display: flex; }
+            .nav-menu li a { border-bottom: 1px solid rgba(255,255,255,0.1); }
+            .contact-grid { grid-template-columns: 1fr 1fr; }
+            .contact-hero h1 { font-size: 28px; }
+        }
+
+        @media (max-width: 500px) {
+            .contact-grid { grid-template-columns: 1fr; }
+            .clinic-address-box { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="container top-header">
+        <div class="logo">
+            <i class="fa-solid fa-hand-holding-medical"></i>
+            <div>
+                Hope of Healing
+                <span>Dr. Javed Iqbal – Homeopathic Clinic</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <a href="main.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container nav-container">
+            <button class="menu-toggle" id="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="nav-menu" id="nav-links">
+                <li><a href="main.html">Home</a></li>
+                <li><a href="main.html#about">About Dr. Javed</a></li>
+                <li><a href="appointment.html">Appointments</a></li>
+                <li><a href="checkup.html">Online Checkup</a></li>
+                <li class="active"><a href="contact.html">Contact</a></li>
+                <li><a href="main.html#services">Services</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <div class="container">
+        <div class="contact-hero">
+            <h1>📞 Get in Touch</h1>
+            <p>Reach out to Dr. Javed Iqbal via your preferred network</p>
+        </div>
+
+        <div class="contact-grid">
+            <!-- WhatsApp -->
+            <div class="contact-card">
+                <div class="icon-circle whatsapp">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </div>
+                <div class="network-name">WhatsApp</div>
+                <div class="number">0305-4322122</div>
+                <a href="https://wa.me/923054322122?text=Hi%20Dr.%20Javed%2C%20I%20need%20a%20consultation" 
+                   target="_blank" 
+                   class="action-link whatsapp-link">
+                    <i class="fa-brands fa-whatsapp"></i> Message Now
+                </a>
+            </div>
+
+            <!-- Jazz -->
+            <div class="contact-card">
+                <div class="icon-circle jazz">
+                    <i class="fa-solid fa-phone"></i>
+                </div>
+                <div class="network-name">Jazz</div>
+                <div class="number">0305-4322122</div>
+                <a href="tel:+923054322122" class="action-link call">
+                    <i class="fa-solid fa-phone"></i> Call Now
+                </a>
+            </div>
+
+            <!-- Zong -->
+            <div class="contact-card">
+                <div class="icon-circle zong">
+                    <i class="fa-solid fa-phone"></i>
+                </div>
+                <div class="network-name">Zong</div>
+                <div class="number">0315-8423383</div>
+                <a href="tel:+923158423383" class="action-link call">
+                    <i class="fa-solid fa-phone"></i> Call Now
+                </a>
+            </div>
+
+            <!-- Ufone -->
+            <div class="contact-card">
+                <div class="icon-circle ufone">
+                    <i class="fa-solid fa-phone"></i>
+                </div>
+                <div class="network-name">Ufone</div>
+                <div class="number">0332-7423383</div>
+                <a href="tel:+923327423383" class="action-link call">
+                    <i class="fa-solid fa-phone"></i> Call Now
+                </a>
+            </div>
+        </div>
+
+        <!-- Clinic Address -->
+        <div class="clinic-address-box">
+            <i class="fa-solid fa-location-dot"></i>
+            <h3>📍 Hope of Healing Clinic</h3>
+            <p>[Your Full Clinic Address Here]</p>
+            <p style="margin-top: 8px; font-weight: 500; color: var(--dark-blue);">
+                <i class="fa-regular fa-clock"></i> Mon–Sat: 5:00 PM – 10:00 PM &nbsp;|&nbsp; Sun: 10:00 AM – 2:00 PM, 5:00 PM – 10:00 PM
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const navLinks = document.getElementById('nav-links');
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+        });
+    </script>
+
+</body>
+</html>
