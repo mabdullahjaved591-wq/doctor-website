@@ -37,7 +37,6 @@
         body {
             background-color: var(--light-grey);
             color: var(--dark-slate);
-            /* Dummy background to simulate the website */
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -46,7 +45,43 @@
             gap: 20px;
         }
 
-        /* --- Dummy Trigger Buttons (To simulate your website buttons) --- */
+        /* --- Top Header (added for site consistency) --- */
+        .site-header {
+            width: 100%;
+            background: var(--soft-white);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--dark-slate);
+        }
+        .logo i { color: var(--primary-teal); font-size: 28px; }
+        .logo span { font-weight: 400; font-size: 14px; color: #6c7a89; }
+        .btn-back {
+            background-color: var(--primary-teal);
+            color: var(--soft-white);
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 13px;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        .btn-back:hover { background-color: var(--primary-hover); }
+
+        /* --- Dummy Section (now with actual triggers) --- */
         .dummy-section {
             text-align: center;
             padding: 40px;
@@ -55,6 +90,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             max-width: 600px;
             width: 90%;
+            margin-top: 80px; /* To account for fixed header */
         }
 
         .btn {
@@ -88,7 +124,7 @@
             box-shadow: none;
         }
 
-        /* --- Modal Overlay & Container --- */
+        /* --- Modal Overlay & Container (unchanged) --- */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -449,37 +485,57 @@
                 padding: 15px;
             }
             .step-label {
-                display: none; /* Hide text on small screens to save space */
+                display: none;
+            }
+            .site-header {
+                padding: 10px 15px;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .dummy-section {
+                margin-top: 120px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- DUMMY WEBSITE CONTENT (To demonstrate the integration) -->
+    <!-- ===== SITE HEADER (links to index.html) ===== -->
+    <header class="site-header">
+        <div class="logo">
+            <i class="fa-solid fa-hand-holding-medical"></i>
+            <div>
+                Hope of Healing
+                <span>Dr. Javed Iqbal – Homeopathic Clinic</span>
+            </div>
+        </div>
+        <a href="index.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+    </header>
+
+    <!-- ===== DUMMY PAGE CONTENT (triggers the modal) ===== -->
     <div class="dummy-section">
         <h2>Dr. Javed Iqbal - Hope of Healing</h2>
-        <p style="margin-bottom: 20px; color: #6c7a89;">Testing the modal triggers. Click any button below.</p>
+        <p style="margin-bottom: 20px; color: #6c7a89;">Schedule your consultation – choose your preferred mode.</p>
         
-        <!-- These classes 'trigger-booking' connect them to the JS -->
+        <!-- These buttons open the modal -->
         <button class="btn trigger-booking" style="margin-bottom: 10px;">
-            <i class="fa-regular fa-calendar-check"></i> Header: Book Appointment
+            <i class="fa-regular fa-calendar-check"></i> Book Appointment
         </button><br>
         <button class="btn trigger-booking" style="margin-bottom: 10px;">
-            Hero: Book a Consultation &rarr;
+            <i class="fa-solid fa-video"></i> Start Online Checkup
         </button><br>
         <button class="btn btn-outline trigger-booking">
-            <i class="fa-solid fa-paper-plane"></i> Contact: Send Request
+            <i class="fa-solid fa-paper-plane"></i> Quick Inquiry
         </button>
     </div>
 
     <!-- ==========================================
-         APPOINTMENT BOOKING MODAL (THE UI)
+         APPOINTMENT BOOKING MODAL
          ========================================== -->
     <div class="modal-overlay" id="bookingModal">
         <div class="modal-content">
             
-            <!-- Header -->
+            <!-- Modal Header -->
             <div class="modal-header">
                 <div>
                     <h2><i class="fa-solid fa-leaf"></i> Hope of Healing</h2>
@@ -617,7 +673,7 @@
     </div>
 
     <!-- ==========================================
-         JAVASCRIPT LOGIC
+         JAVASCRIPT LOGIC (unchanged)
          ========================================== -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -626,24 +682,17 @@
             const modal = document.getElementById('bookingModal');
             const closeBtn = document.getElementById('closeModal');
             
-            // This connects ANY button with the class 'trigger-booking' (Header, Hero, Contact)
             const triggerButtons = document.querySelectorAll('.trigger-booking');
             
-            // Open modal when any trigger button is clicked
             triggerButtons.forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    e.preventDefault(); // Prevents default link jumps if they are <a> tags
+                    e.preventDefault();
                     modal.classList.add('active');
                 });
             });
 
-            // Close modal functions
             const closeModalFunc = () => modal.classList.remove('active');
-            
-            // Close on X button click
             closeBtn.addEventListener('click', closeModalFunc);
-            
-            // Close when clicking strictly outside the modal content area
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     closeModalFunc();
@@ -681,7 +730,6 @@
             const submitBtn = document.getElementById('submitBtn');
             const form = document.getElementById('bookingForm');
 
-            // Function to validate inputs within the *current* active step only
             function validateStep() {
                 const currentContent = document.getElementById(`step-${currentStep}`);
                 const inputs = currentContent.querySelectorAll('input[required], select[required], textarea[required]');
@@ -689,7 +737,7 @@
                 
                 inputs.forEach(input => {
                     if (!input.checkValidity()) {
-                        input.reportValidity(); // Shows native browser HTML5 error popup
+                        input.reportValidity();
                         isValid = false;
                     }
                 });
@@ -697,12 +745,10 @@
             }
 
             function updateUI() {
-                // Update Form Content visibility
                 document.querySelectorAll('.step-content').forEach((step, index) => {
                     step.classList.toggle('active', index + 1 === currentStep);
                 });
 
-                // Update Progress Indicators
                 document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
                     if (index + 1 < currentStep) {
                         indicator.classList.add('completed', 'active');
@@ -714,7 +760,6 @@
                     }
                 });
 
-                // Update Footer Buttons
                 prevBtn.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
                 
                 if (currentStep === totalSteps) {
@@ -726,7 +771,6 @@
                 }
             }
 
-            // Next Button Click
             nextBtn.addEventListener('click', () => {
                 if (validateStep()) {
                     currentStep++;
@@ -734,28 +778,23 @@
                 }
             });
 
-            // Previous Button Click
             prevBtn.addEventListener('click', () => {
                 currentStep--;
                 updateUI();
             });
 
-            // --- 5. FORM SUBMISSION LOGIC ---
             form.addEventListener('submit', (e) => {
-                e.preventDefault(); // Stop actual page reload
-                
-                // Double check final step validation
+                e.preventDefault();
                 if (validateStep()) {
-                    // Hide wizard progress, footer, and active step
                     document.getElementById('wizardProgress').style.display = 'none';
                     document.getElementById('modalFooter').style.display = 'none';
                     document.getElementById(`step-${currentStep}`).classList.remove('active');
-                    
-                    // Show beautiful success screen
                     document.getElementById('successScreen').classList.add('active');
                 }
             });
 
+            // Initial UI update
+            updateUI();
         });
     </script>
 </body>
